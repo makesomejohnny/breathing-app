@@ -27,7 +27,9 @@
             color: white;
             transition: background 2s ease;
             overflow-x: hidden;
-            background: var(--bg-color);
+            /* 背景を画面に固定し、繰り返さない設定 */
+            background-attachment: fixed;
+            background-size: cover;
         }
 
         /* 時間帯別背景 */
@@ -255,11 +257,19 @@
             const hour = new Date().getHours();
             const body = document.body;
             body.classList.remove('day', 'evening', 'night');
-            if (hour >= 6 && hour < 16) body.classList.add('day');
-            else if (hour >= 16 && hour < 19) body.classList.add('evening');
-            else body.classList.add('night');
-        }
 
+            // クラスの付け替え
+            if (hour >= 6 && hour < 16) {
+                body.classList.add('day');
+            } else if (hour >= 16 && hour < 19) {
+                body.classList.add('evening');
+            } else {
+                body.classList.add('night');
+            }
+
+            // デバッグ用：今の時間をコンソールに出すと確認しやすくなります
+            console.log("Current Hour:", hour, "Applied Class:", body.className);
+        }
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
         function playBell(freq, vol = 0.1) {
