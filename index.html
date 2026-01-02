@@ -211,14 +211,14 @@
         <h2>BREATH GUIDE</h2>
 
         <div class="section-label">MODE</div>
-        <div class="button-group">
+        <div class="button-group" id="mode-group">
             <button id="focus-btn" onclick="selectMode('focus')">集中</button>
             <button id="base-btn" onclick="selectMode('base')">基本</button>
             <button id="relax-btn" onclick="selectMode('relax')">癒やし</button>
         </div>
 
         <div class="section-label">ROUNDS</div>
-        <div class="button-group">
+        <div class="button-group" id="round-group">
             <button id="r3" onclick="selectRounds(3)">3回</button>
             <button id="r5" onclick="selectRounds(5)">5回</button>
             <button id="r10" onclick="selectRounds(10)">10回</button>
@@ -310,13 +310,12 @@
             if (isRunning) return;
             selectedData = configs[key];
 
-            // モードボタンのグループ（1番目のgroup）からactiveを消す
-            const modeButtons = document.querySelectorAll('.button-group:nth-of-type(1) button');
+            // mode-groupの中にあるボタン「だけ」のactiveを消す
+            const modeButtons = document.querySelectorAll('#mode-group button');
             modeButtons.forEach(btn => btn.classList.remove('active'));
 
-            // ID名に「-btn」がついているので注意（htmlのidと一致させる）
-            const targetId = key + '-btn';
-            const targetBtn = document.getElementById(targetId);
+            // 選択されたボタンにactiveをつける
+            const targetBtn = document.getElementById(key + '-btn');
             if (targetBtn) targetBtn.classList.add('active');
 
             document.getElementById('info-text').innerHTML = selectedData.desc;
@@ -328,11 +327,11 @@
             if (isRunning) return;
             remainingLoops = n;
 
-            // ラウンドボタンのグループ（2番目のgroup）からactiveを消す
-            const roundButtons = document.querySelectorAll('.button-group:nth-of-type(2) button');
+            // round-groupの中にあるボタン「だけ」のactiveを消す
+            const roundButtons = document.querySelectorAll('#round-group button');
             roundButtons.forEach(btn => btn.classList.remove('active'));
 
-            // 今押されたボタンにactiveをつける
+            // 選択されたボタンにactiveをつける
             const targetBtn = document.getElementById('r' + n);
             if (targetBtn) targetBtn.classList.add('active');
 
