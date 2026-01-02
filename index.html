@@ -155,7 +155,8 @@
             align-items: center;
             will-change: transform;
             transition: transform 1s ease-in-out;
-            backface-visibility: hidden;/* チラつき防止 */
+            backface-visibility: hidden;
+            /* チラつき防止 */
         }
         }
 
@@ -423,42 +424,57 @@
                 document.getElementById('time').innerText = time;
                 document.getElementById('phase').innerText = (phase === 'inhale') ? "吸って" : (phase.startsWith('hold') ? "止めて" : "吐いて");
 
-                if (time === selectedData.times[phase]) {
-                    if (phase === 'inhale') {
-                        // 1. まずアニメーションを完全にリセット
-                        circle.style.transition = "none";
-                        circle.style.transform = "scale(1)";
+                const updateUI = (phase, time) => {
+                    document.getElementById('time').innerText = time;
+                    document.getElementById('phase').innerText = (phase === 'inhale') ? "吸って" : (phase.startsWith('hold') ? "止めて" : "吐いて");
 
-                        // 2. ブラウザが「リセットされた」と認識するのを一瞬待ってから実行
-                        requestAnimationFrame(() => {
+                    // 各フェーズの「開始1秒目」に音と動きをセットする
+                    if (time === selectedData.times[phase]) {
+                        if (phase === 'inhale') {
+                            // 吸う：円を大きく、高い音を出す
+                            circle.style.transition = "none";
+                            circle.style.transform = "scale(1)";
                             requestAnimationFrame(() => {
-                                circle.style.transition = `transform ${selectedData.times[phase]}s ease-in-out`;
-                                circle.style.transform = "scale(1.2)";
+                                requestAnimationFrame(() => {
+                                    circle.style.transition = `transform ${selectedData.times[phase]}s ease-in-out`;
+                                    circle.style.transform = "scale(1.2)";
+                                });
                             });
-                        });
-
-                        playBell(880, 0.05);
-                        startBreathSound(true, selectedData.times[phase]);
+                            playBell(880, 0.05);
+                            startBreathSound(true, selectedData.times[phase]); // 高いピンクノイズ
+                        }
+                        else if (phase.startsWith('hold')) {
+                            // 止める：音を消す、円の動きを止める
+                            stopBreathSound();
+                            playBell(440, 0.03);
+                            circle.style.transition = "none";
+                        }
+                        else if (phase === 'exhale') {
+                            // 吐く：円を小さく、低い音を出す
+                            circle.style.transition = `transform ${selectedData.times[phase]}s ease-in-out`;
+                            circle.style.transform = "scale(1.0)";
+                            playBell(660, 0.05);
+                            startBreathSound(false, selectedData.times[phase]); // 低いピンクノイズ（ここが復活！）
+                        }
                     }
-                }
-            };
-            updateUI(currentPhase, timeLeft);
-            currentTimer = setInterval(() => {
-                timeLeft--;
-                if (timeLeft <= 0) {
-                    phaseIdx++;
-                    if (phaseIdx >= selectedData.phases.length) {
-                        remainingLoops--; document.getElementById('loop-count').innerText = `残り：${remainingLoops} 回`;
-                        if (remainingLoops <= 0) { playBell(1046, 0.1); resetSystem(); document.getElementById('phase').innerText = "完了"; return; }
-                        phaseIdx = 0;
-                    }
-                    currentPhase = selectedData.phases[phaseIdx]; timeLeft = selectedData.times[currentPhase];
-                }
+                };
                 updateUI(currentPhase, timeLeft);
-            }, 1000);
-        }
+                currentTimer = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        phaseIdx++;
+                        if (phaseIdx >= selectedData.phases.length) {
+                            remainingLoops--; document.getElementById('loop-count').innerText = `残り：${remainingLoops} 回`;
+                            if (remainingLoops <= 0) { playBell(1046, 0.1); resetSystem(); document.getElementById('phase').innerText = "完了"; return; }
+                            phaseIdx = 0;
+                        }
+                        currentPhase = selectedData.phases[phaseIdx]; timeLeft = selectedData.times[currentPhase];
+                    }
+                    updateUI(currentPhase, timeLeft);
+                }, 1000);
+            }
 
-        window.addEventListener('load', () => { updateBackground(); selectMode('base'); selectRounds(5); });
+            window.addEventListener('load', () => { updateBackground(); selectMode('base'); selectRounds(5); });
     </script>
 </body>
 
