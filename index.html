@@ -154,6 +154,9 @@
             justify-content: center;
             align-items: center;
             will-change: transform;
+            transition: transform 1s ease-in-out;
+            backface-visibility: hidden;/* チラつき防止 */
+        }
         }
 
         .phase-label {
@@ -419,16 +422,23 @@
             const updateUI = (phase, time) => {
                 document.getElementById('time').innerText = time;
                 document.getElementById('phase').innerText = (phase === 'inhale') ? "吸って" : (phase.startsWith('hold') ? "止めて" : "吐いて");
+
                 if (time === selectedData.times[phase]) {
                     if (phase === 'inhale') {
-                        circle.style.transition = "none"; circle.style.transform = "scale(1)";
-                        requestAnimationFrame(() => { circle.style.transition = `transform ${selectedData.times[phase]}s ease-in-out`; circle.style.transform = "scale(1.2)"; });
-                        playBell(880, 0.05); startBreathSound(true, selectedData.times[phase]);
-                    } else if (phase.startsWith('hold')) {
-                        circle.style.transition = "none"; stopBreathSound(); playBell(440, 0.03);
-                    } else if (phase === 'exhale') {
-                        circle.style.transition = `transform ${selectedData.times[phase]}s ease-in-out`; circle.style.transform = "scale(1.0)";
-                        playBell(660, 0.05); startBreathSound(false, selectedData.times[phase]);
+                        // 1. まずアニメーションを完全にリセット
+                        circle.style.transition = "none";
+                        circle.style.transform = "scale(1)";
+
+                        // 2. ブラウザが「リセットされた」と認識するのを一瞬待ってから実行
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                circle.style.transition = `transform ${selectedData.times[phase]}s ease-in-out`;
+                                circle.style.transform = "scale(1.2)";
+                            });
+                        });
+
+                        playBell(880, 0.05);
+                        startBreathSound(true, selectedData.times[phase]);
                     }
                 }
             };
@@ -453,4 +463,3 @@
 </body>
 
 </html>
-
