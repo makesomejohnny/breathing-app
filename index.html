@@ -4,7 +4,7 @@
     <meta name="google-site-verification" content="TR8OxtfrZ4C85uZdT12t7aRYjkaJpFrukCaWB83UxeQ" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BREATH GUIDE | 集中・リラックスのための呼吸法ガイド</title>
+    <title>BREATH GUIDE | デスクワークのための呼吸法ガイド</title>
     <meta name="description" content="ピンクノイズとアニメーションでガイドする呼吸法アプリ。4-7-8呼吸法、ボックス呼吸、リラックス呼吸を実践。">
     <style>
         :root {
@@ -229,9 +229,9 @@
         function stopBreathSound() { if (breathNode) { try { const now = audioCtx.currentTime; gainNode.gain.cancelScheduledValues(now); gainNode.gain.linearRampToValueAtTime(0, now + 0.2); breathNode.stop(now + 0.3); } catch (e) { } breathNode = null; } }
 
         const configs = {
-            focus: { phases: ['inhale', 'hold', 'exhale'], times: { inhale: 4, hold: 7, exhale: 8 }, desc: "<b>4-7-8呼吸法（集中・鎮静）</b>", tip: "吸うときにお腹を前に出し、吐くときは凹ませるのがコツです。" },
-            base: { phases: ['inhale', 'hold1', 'exhale', 'hold2'], times: { inhale: 4, hold1: 4, exhale: 4, hold2: 4 }, desc: "<b>ボックス呼吸法（基本）</b>", tip: "横隔膜を下げる意識で。肺の下の方まで空気を入れるイメージ。" },
-            relax: { phases: ['inhale', 'hold', 'exhale'], times: { inhale: 4, hold: 4, exhale: 8 }, desc: "<b>リラックス呼吸法（4-4-8）</b>", tip: "吐くときにお腹の力を抜き、体が椅子に沈み込む感覚を大切に。" }
+            focus: { phases: ['inhale', 'hold', 'exhale'], times: { inhale: 4, hold: 7, exhale: 8 }, desc: "<b>4-7-8呼吸法（不安・焦り・寝る前に向く）</b>", tip: "吸うときにお腹を前に出し、吐くときは凹ませるのがコツです。" },
+            base: { phases: ['inhale', 'hold1', 'exhale', 'hold2'], times: { inhale: 4, hold1: 4, exhale: 4, hold2: 4 }, desc: "<b>ボックス呼吸法（集中力と冷静さを得る）</b>", tip: "横隔膜を下げる意識で。肺の下の方まで空気を入れるイメージ。" },
+            relax: { phases: ['inhale', 'hold', 'exhale'], times: { inhale: 4, hold: 4, exhale: 8 }, desc: "<b>4-4-8呼吸法（短時間で緊張を下げる）</b>", tip: "吐くときにお腹の力を抜き、体が椅子に沈み込む感覚を大切に。" }
         };
 
         function selectMode(key) {
@@ -336,3 +336,4 @@
     </script>
 </body>
 </html>
+
